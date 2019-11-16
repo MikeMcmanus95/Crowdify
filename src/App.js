@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Spotify from 'spotify-web-api-js';
+import Search from './Search';
 
 const spotifyWebApi = new Spotify();
 
@@ -11,6 +12,13 @@ class App extends Component {
     this.state = {
       loggedIn: params.access_token ? true : false,
       nowPlaying: {
+        id: '',
+        name: 'None',
+        image: '',
+        uri: '',
+      },
+      playlist: {
+        id: '',
         name: 'None',
         image: '',
       },
@@ -32,14 +40,45 @@ class App extends Component {
   async getNowPlaying() {
     const response = await spotifyWebApi.getMyCurrentPlaybackState();
     console.log(response);
+    if (response.item) {
+      this.setState({
+        nowPlaying: {
+          id: response.item.id,
+          name: response.item.name,
+          image: response.item.album.images[0].url,
+          uri: response.item.uri,
+        },
+      });
+    } else {
+      console.log('Nothing currently playing');
+    }
+  }
+
+  async getPlaylists() {
+    const response = await spotifyWebApi.getUserPlaylists();
+    console.log('PLAYLISTS', response);
     this.setState({
-      nowPlaying: {
-        name: response.item.name,
-        image: response.item.album.images[0].url,
+      playlist: {
+        id: response.items[0].id,
+        name: response.items[0].name,
+        image: response.items[0].images[0].url,
       },
     });
   }
+
+  async addToPlaylist() {
+    const playlistId = this.state.playlist.id;
+    const trackUri = this.state.nowPlaying.uri;
+    const response = await spotifyWebApi.addTracksToPlaylist(playlistId, [
+      trackUri,
+    ]);
+    if (response) {
+      console.log('success?');
+      console.log(response);
+    }
+  }
   render() {
+    const playlistObj = this.state.playlist;
     const login = (
       <a className="waves-effect waves-light btn" href="http://localhost:8888">
         Login with Spotify
@@ -47,19 +86,41 @@ class App extends Component {
     );
     const player = (
       <div className="App">
-        <div>Now Playing: {this.state.nowPlaying.name}</div>
+        <Search></Search>
+        <div>
+          <h1>Now Playing: {this.state.nowPlaying.name}</h1>
+        </div>
         <div>
           <img
             src={this.state.nowPlaying.image}
             style={{ width: 500, height: 500 }}
           ></img>
         </div>
-        <a
+        <button
           className="waves-effect waves-light btn"
           onClick={() => this.getNowPlaying()}
         >
           Check Now Playing
-        </a>
+        </button>
+        <button
+          className="waves-effect waves-light btn"
+          onClick={() => this.getPlaylists()}
+        >
+          Get playlists
+        </button>
+        <button
+          className="waves-effect waves-light btn"
+          onClick={() => this.addToPlaylist()}
+        >
+          Add to Playlist
+        </button>
+        <div>
+          <h1>Playlist: {playlistObj.name}</h1>
+          <img
+            src={playlistObj.image}
+            style={{ width: 500, height: 500 }}
+          ></img>
+        </div>
       </div>
     );
     if (this.state.loggedIn === false) {
