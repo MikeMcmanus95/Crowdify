@@ -10,7 +10,7 @@ export const ADD_TO_PLAYLIST = 'ADD_TO_PLAYLIST';
 const initialState = {
   nowPlaying: {
     id: '',
-    name: 'Nothing currently playing',
+    name: '',
     image: placeHolderImg,
     uri: '',
   },

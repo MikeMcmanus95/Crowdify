@@ -13,6 +13,11 @@ const Navbar = ({ loggedIn }) => (
                 <i className="large material-icons">audiotrack</i>
               </Link>
             </li>
+            <li className="tab">
+              <Link to="/search">
+                <i className="large material-icons">search</i>
+              </Link>
+            </li>
           </ul>
         </div>
       ) : (

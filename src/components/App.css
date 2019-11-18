@@ -1,3 +1,7 @@
+body {
+  background-color: #212121;
+}
+
 .App {
   text-align: center;
 }
@@ -26,4 +30,12 @@
   position: fixed;
   bottom: 0;
   width: 100%;
+}
+
+h1 {
+  color: #b3b3b3;
+}
+
+h5 {
+  color: #b3b3b3;
 }
