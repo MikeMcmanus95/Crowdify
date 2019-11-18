@@ -6,6 +6,7 @@ const placeHolderImg =
 export const GET_NOW_PLAYING = 'GET_NOW_PLAYING';
 export const GET_PLAYLISTS = 'GET_PLAYLISTS';
 export const ADD_TO_PLAYLIST = 'ADD_TO_PLAYLIST';
+export const SEARCH_SONGS = 'SEARCH_SONGS';
 
 const initialState = {
   nowPlaying: {
@@ -15,6 +16,7 @@ const initialState = {
     uri: '',
   },
   playlists: [],
+  searchResults: [],
 };
 
 export const getNowPlaying = nowPlaying => {
@@ -34,6 +36,13 @@ export const getPlaylists = playlists => {
 export const addToPlaylist = track => {
   return {
     type: ADD_TO_PLAYLIST,
+  };
+};
+
+export const searchSongs = searchResults => {
+  return {
+    type: SEARCH_SONGS,
+    searchResults,
   };
 };
 
@@ -66,6 +75,20 @@ export const addToPlaylistThunk = (playlistId, tracks) => async dispatch => {
   }
 };
 
+export const searchSongsThunk = query => async dispatch => {
+  const response = await spotifyWebApi.search(query, [
+    'track',
+    'artist',
+    'album',
+  ]);
+  if (response) {
+    console.log('Search successful, ', response.tracks.items);
+    dispatch(searchSongs(response.tracks.items));
+  } else {
+    console.log('No response');
+  }
+};
+
 const musicReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_NOW_PLAYING:
@@ -74,6 +97,8 @@ const musicReducer = (state = initialState, action) => {
       return { ...state, playlists: action.playlists };
     case ADD_TO_PLAYLIST:
       return { ...state };
+    case SEARCH_SONGS:
+      return { ...state, searchResults: action.searchResults };
     default:
       return state;
   }

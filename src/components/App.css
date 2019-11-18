@@ -30,6 +30,7 @@ body {
   position: fixed;
   bottom: 0;
   width: 100%;
+  z-index: 7;
 }
 
 h1 {
@@ -38,4 +39,8 @@ h1 {
 
 h5 {
   color: #b3b3b3;
+}
+
+h2 {
+  color: #ef9a9a;
 }

@@ -1,10 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import {
-  getNowPlayingThunk,
-  getPlaylistsThunk,
-  addToPlaylistThunk,
-} from '../store/music';
+import { getNowPlayingThunk, getPlaylistsThunk } from '../store/music';
 
 const Home = props => {
   const nowPlaying = props.nowPlaying;
@@ -36,15 +32,10 @@ const Home = props => {
               ? nowPlaying.album.images[0].url
               : props.nowPlaying.image
           }
+          alt="Single Art"
           style={{ width: 500, height: 500 }}
         ></img>
       </div>
-      <button
-        className="waves-effect waves-light btn"
-        onClick={() => props.addToPlaylist(playlists[0].id, [nowPlaying.uri])}
-      >
-        Add to Playlist
-      </button>
       <div>
         <h1>Playlist: {playlists[0] ? playlists[0].name : ''}</h1>
         <img
@@ -52,6 +43,7 @@ const Home = props => {
             playlists[0] ? playlists[0].images[0].url : props.nowPlaying.image
           }
           style={{ width: 500, height: 500 }}
+          alt="Playlist Art"
         ></img>
       </div>
     </div>
@@ -69,8 +61,6 @@ const mapDispatch = dispatch => {
   return {
     getNowPlaying: () => dispatch(getNowPlayingThunk()),
     getPlaylists: () => dispatch(getPlaylistsThunk()),
-    addToPlaylist: (playlistId, tracks) =>
-      dispatch(addToPlaylistThunk(playlistId, tracks)),
   };
 };
 
